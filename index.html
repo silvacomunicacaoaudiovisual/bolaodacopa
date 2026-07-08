@@ -122,16 +122,22 @@
         } else { alert("Senha incorreta!"); }
     }
 
-    refPalpites.on('value', (snapshot) => {
+  refPalpites.on('value', (snapshot) => {
         const cL = document.getElementById('containerLista'), cA = document.getElementById('containerAdmin');
         cL.innerHTML = ''; cA.innerHTML = '<h4 style="color:#ff9900;">Aprovação de Pendentes</h4>';
         let contagemAprovados = 0, data = snapshot.val();
+        
         for (let id in data) {
+            // Pega os últimos 4 dígitos do telefone
+            let telCompleto = data[id].telefone || "";
+            let ultimosQuatro = telCompleto.slice(-4); 
+
             if (data[id].status === 'aprovado') {
-                cL.innerHTML += `<div class="item-palpite"><span>${data[id].nome}</span> <b>${data[id].placar}</b></div>`;
+                // Exibe nome + (últimos 4) + placar
+                cL.innerHTML += `<div class="item-palpite"><span>${data[id].nome} ${ultimosQuatro}</span> <b>${data[id].placar}</b></div>`;
                 contagemAprovados++;
             } else if (data[id].status === 'pendente') {
-                cA.innerHTML += `<div class="item-palpite"><span>${data[id].nome} (${data[id].telefone}) - ${data[id].placar}</span> <button onclick="aprovarPalpite('${id}')" style="background:#00ff00; border:none; padding:5px; cursor:pointer;">APROVAR</button></div>`;
+                cA.innerHTML += `<div class="item-palpite"><span>${data[id].nome} (${ultimosQuatro}) - ${data[id].placar}</span> <button onclick="aprovarPalpite('${id}')" style="background:#00ff00; border:none; padding:5px; cursor:pointer;">APROVAR</button></div>`;
             }
         }
         document.getElementById('valorAcumulado').innerText = (contagemAprovados * VALOR_POR_PALPITE).toFixed(2).replace('.', ',');
@@ -164,4 +170,4 @@
     function aprovarPalpite(id) { firebase.database().ref('palpites/' + id).update({ status: 'aprovado' }); }
 </script>
 </body>
-</html>
+</html>>
