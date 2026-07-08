@@ -67,6 +67,13 @@
     <div id="containerAdmin" class="container-padrao" style="display: none; text-align: center;"></div>
 </div>
 
+<div style="text-align: center; margin-top: 20px; margin-bottom: 30px;">
+    <a href="https://wa.me/5596984379282?text=Olá, preciso de ajuda com o Bolão!" target="_blank"
+       style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background-color: #25d366; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-family: sans-serif; font-weight: bold; font-size: 0.8em; box-shadow: 0px 4px 10px rgba(0,0,0,0.3);">
+       <span class="material-icons" style="font-size: 18px;">chat</span> PRECISA DE AJUDA?
+    </a>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 <script>
@@ -157,17 +164,6 @@
     }
 
     function aprovarPalpite(id) { firebase.database().ref('palpites/' + id).update({ status: 'aprovado' }); }
-<div style="text-align: center; margin-top: 20px; margin-bottom: 30px;">
-    <a href="https://wa.me/5596984379282?text=Olá, preciso de ajuda com o Bolão!" target="_blank"
-       style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background-color: #25d366; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-family: sans-serif; font-weight: bold; font-size: 0.8em; box-shadow: 0px 4px 10px rgba(0,0,0,0.3);">
-       <span class="material-icons" style="font-size: 18px;">chat</span> PRECISA DE AJUDA?
-    </a>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
-<script>
-    // ... (o restante do seu código script permanece igual ao que te enviei antes)
 </script>
 </body>
 </html>
