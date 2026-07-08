@@ -10,33 +10,44 @@
         .container-padrao { width: 350px; box-sizing: border-box; background-color: #1a1a1a; border-radius: 20px; border: 1px solid #333; padding: 20px; margin-bottom: 20px; text-align: center; }
         h2 { color: #ff9900; margin: 5px 0; font-size: 1.2em; }
         .input-estilo { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: white; border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; }
-        .confronto { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 10px 0; }
+        .confronto { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 15px 0; }
+        .bandeira { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #444; }
         .input-placar { width: 45px; height: 45px; background: #222; border: 1px solid #444; border-radius: 8px; color: white; text-align: center; font-size: 1.2em; }
         button { background-color: #ff9900; color: black; padding: 15px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; border: none; }
+        .item-palpite { border-bottom: 1px solid #333; padding: 10px 0; display: flex; justify-content: space-between; font-size: 0.9em; align-items: center; }
     </style>
 </head>
 <body>
 
-<div class="container-padrao" id="formCard">
+<div class="container-padrao">
     <h2>VALOR R$ 5,00</h2>
-    
-    <!-- Campos de entrada -->
+    <div style="color: #888; font-size: 0.9em; margin-bottom: 10px;">09/07/2026 - 17:00</div>
+
     <input type="text" id="nomeCliente" class="input-estilo" placeholder="SEU NOME">
     <input type="tel" id="telCliente" class="input-estilo" placeholder="SEU WHATSAPP (DDD + NÚMERO)">
 
     <div class="confronto">
-        <div style="font-size: 0.7em;">FRANÇA</div>
+        <div style="text-align: center;"><img src="https://img.magnific.com/fotos-premium/bandeira-francesa_565824-642.jpg?semt=ais_hybrid&w=740&q=80" class="bandeira"><div style="font-size: 0.7em;">FRANÇA</div></div>
         <input type="number" id="golsCasa" class="input-placar" min="0">
         <span style="color: #ff9900; font-weight: bold;">X</span>
         <input type="number" id="golsFora" class="input-placar" min="0">
-        <div style="font-size: 0.7em;">MARROCOS</div>
+        <div style="text-align: center;"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTB4ml0NVU3NcoNOzrcSi9SmD2qwRuNVqtvJ9YZcVybEA&s=10" class="bandeira"><div style="font-size: 0.7em;">MARROCOS</div></div>
     </div>
 
     <button id="btnConfirmar" onclick="processarCheckout()">PAGAR E CONFIRMAR</button>
-    
-    <div id="areaPagamento" style="display: none; margin-top: 20px;">
+    <div id="areaPagamento" style="display: none; margin-top: 15px;">
         <button onclick="enviarComprovante()" style="background:#25d366; color:white;">ENVIAR COMPROVANTE (WHATS)</button>
     </div>
+</div>
+
+<div class="container-padrao" id="listaPalpites">
+    <h3 style="color: #ff9900; margin-top: 0;">Palpites Confirmados</h3>
+    <div id="containerLista"></div>
+</div>
+
+<div id="painelAdmin" style="text-align: center; margin-bottom: 20px;">
+    <button onclick="pedirSenha()" style="background: transparent; border: none; cursor: pointer; color: #555;"><span class="material-icons">settings</span></button>
+    <div id="containerAdmin" class="container-padrao" style="display: none; text-align: center;"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
@@ -45,8 +56,21 @@
     const firebaseConfig = { apiKey: "AIzaSyBK8kZiZ9WApBQf_HJVbOUJXfgOhbd3SrA", authDomain: "palpite-59a77.firebaseapp.com", databaseURL: "https://palpite-59a77-default-rtdb.firebaseio.com", projectId: "palpite-59a77", storageBucket: "palpite-59a77.firebasestorage.app", messagingSenderId: "284052798402", appId: "1:284052798402:web:2276d507fe6e9de4b9b45b" };
     firebase.initializeApp(firebaseConfig);
     const refPalpites = firebase.database().ref('palpites/');
+    const DATA_LIMITE = new Date(2026, 6, 9, 17, 0, 0); 
+    const SENHA_ADMIN = "7260";
+
+    function verificarTrava() {
+        if (new Date() >= DATA_LIMITE) {
+            document.getElementById('btnConfirmar').disabled = true;
+            document.getElementById('btnConfirmar').innerText = "ENCERRADO";
+            return false;
+        }
+        return true;
+    }
+    window.onload = verificarTrava;
 
     function processarCheckout() {
+        if (!verificarTrava()) return alert("As apostas foram encerradas!");
         const nome = document.getElementById('nomeCliente').value.trim();
         const tel = document.getElementById('telCliente').value.trim();
         const golsC = document.getElementById('golsCasa').value;
@@ -54,16 +78,27 @@
 
         if(!nome || !tel || golsC === "" || golsF === "") return alert("Preencha todos os campos!");
         
-        refPalpites.push({ 
-            nome, 
-            telefone: tel, 
-            placar: `${golsC}x${golsF}`, 
-            status: 'pendente' 
-        }).then(() => {
+        refPalpites.push({ nome, telefone: tel, placar: `${golsC}x${golsF}`, status: 'pendente' }).then(() => {
             document.getElementById('btnConfirmar').style.display = 'none';
             document.getElementById('areaPagamento').style.display = 'block';
         });
     }
+
+    function pedirSenha() {
+        if (prompt("Senha:") === SENHA_ADMIN) document.getElementById('containerAdmin').style.display = 'block';
+    }
+
+    refPalpites.on('value', (snapshot) => {
+        const cL = document.getElementById('containerLista'), cA = document.getElementById('containerAdmin');
+        cL.innerHTML = ''; cA.innerHTML = '<h4 style="color:#ff9900;">Aprovação de Pendentes</h4>';
+        const data = snapshot.val();
+        for (let id in data) {
+            if (data[id].status === 'aprovado') cL.innerHTML += `<div class="item-palpite"><span>${data[id].nome}</span> <b>${data[id].placar}</b></div>`;
+            else if (data[id].status === 'pendente') cA.innerHTML += `<div class="item-palpite"><span>${data[id].nome} - ${data[id].placar}</span> <button onclick="aprovarPalpite('${id}')" style="background:#00ff00; border:none; padding:5px; cursor:pointer;">APROVAR</button></div>`;
+        }
+    });
+
+    function aprovarPalpite(id) { firebase.database().ref('palpites/' + id).update({ status: 'aprovado' }); }
 </script>
 </body>
 </html>
