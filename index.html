@@ -143,8 +143,9 @@
         document.getElementById('valorAcumulado').innerText = (contagemAprovados * VALOR_POR_PALPITE).toFixed(2).replace('.', ',');
     });
 
-    function processarCheckout() {
+  async function processarCheckout() {
         if (!verificarTrava()) return alert("As apostas foram encerradas!");
+        
         const nome = document.getElementById('nomeCliente').value.trim();
         const telefone = document.getElementById('telCliente').value.trim();
         const golsC = document.getElementById('golsCasa').value;
@@ -152,11 +153,40 @@
 
         if(!nome || !telefone || golsC === "" || golsF === "") return alert("Preencha todos os campos!");
         
-        refPalpites.push({ nome, telefone, placar: `${golsC}x${golsF}`, status: 'pendente', data: new Date().toLocaleString() }).then(() => {
+        const placarEscolhido = `${golsC}x${golsF}`;
+
+        // BUSCA PALPITES JÁ EXISTENTES
+        const snapshot = await refPalpites.once('value');
+        const dados = snapshot.val();
+        
+        let contagemPlacar = 0;
+        if (dados) {
+            for (let id in dados) {
+                // Conta quantos palpites já existem com esse placar e status 'aprovado'
+                if (dados[id].placar === placarEscolhido && dados[id].status === 'aprovado') {
+                    contagemPlacar++;
+                }
+            }
+        }
+
+        // Se já houver 2 ou mais, bloqueia
+        if (contagemPlacar >= 2) {
+            alert("Este placar já atingiu o limite de 2 palpites! Escolha outro.");
+            return;
+        }
+
+        // SE CHEGOU AQUI, AINDA HÁ VAGA PARA ESSE PLACAR
+        refPalpites.push({ 
+            nome, 
+            telefone, 
+            placar: placarEscolhido, 
+            status: 'pendente', 
+            data: new Date().toLocaleString() 
+        }).then(() => {
             document.getElementById('btnConfirmar').style.display = 'none';
             document.getElementById('areaPagamento').style.display = 'block';
         });
-    }
+    } }
 
     function enviarComprovante() {
         const nome = document.getElementById('nomeCliente').value;
