@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bolão - Espanha x Bélgica</title>
+    <title>Bolão - Espanha x Argentina</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body { background-color: #121212; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
@@ -27,17 +27,17 @@
         <img src="logo.png" style="width: 100px; height: auto;">
         <img src="https://www.ogol.com.br/img/logos/edicoes/176026_imgbank_.png" class="logo-fifa">
     </div>
-    <h2>VALOR R$ 5,00</h2>
+    <h2>VALOR R$ 10,00</h2>
     <div class="valor-acumulado">ACUMULADO: R$ <span id="valorAcumulado">0,00</span></div>
     
-    <div style="color: #ffffff; font-size: 0.9em; margin: 25px 0 0 0;">10/07/2026 - 16:00</div>
+    <div style="color: #ffffff; font-size: 0.9em; margin: 25px 0 0 0;">19/07/2026 - 16:00</div>
 
     <div class="confronto">
         <div style="text-align: center;"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Spain.svg" class="bandeira"><div style="font-size: 0.7em;">ESPANHA</div></div>
         <input type="number" id="golsCasa" class="input-placar" min="0">
         <span style="color: #ff9900; font-weight: bold;">X</span>
         <input type="number" id="golsFora" class="input-placar" min="0">
-        <div style="text-align: center;"><img src="https://upload.wikimedia.org/wikipedia/commons/6/65/Flag_of_Belgium.svg" class="bandeira"><div style="font-size: 0.7em;">BÉLGICA</div></div>
+        <div style="text-align: center;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/330px-Flag_of_Argentina.svg.png" class="bandeira"><div style="font-size: 0.7em;">ARGENTINA</div></div>
     </div>
 
     <input type="text" id="nomeCliente" class="input-text" placeholder="DIGITE SEU NOME">
@@ -84,8 +84,8 @@
     const firebaseConfig = { apiKey: "AIzaSyBK8kZiZ9WApBQf_HJVbOUJXfgOhbd3SrA", authDomain: "palpite-59a77.firebaseapp.com", databaseURL: "https://palpite-59a77-default-rtdb.firebaseio.com", projectId: "palpite-59a77", storageBucket: "palpite-59a77.firebasestorage.app", messagingSenderId: "284052798402", appId: "1:284052798402:web:2276d507fe6e9de4b9b45b" };
     firebase.initializeApp(firebaseConfig);
     const refPalpites = firebase.database().ref('palpites/');
-    const DATA_LIMITE = new Date(2026, 6, 10, 16, 0, 0); 
-    const VALOR_POR_PALPITE = 5.00; 
+    const DATA_LIMITE = new Date(2026, 6, 19, 16, 0, 0); 
+    const VALOR_POR_PALPITE = 10.00; 
     const SENHA_ADMIN = "7260";
 
     function formatarTelefone(input) {
